@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/school?useSSL=false
+      username: root
+      password: kanghui01
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-handlers-package: com.hgc.school.config.StringArrayTypeHandler
+  configuration:
+    # 开启a_column  到  aColumn 的映射
+    map-underscore-to-camel-case: true
+    # mybatis日志打印
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+school:
+  filePrefix: D:/Users/zed/Pictures/Camera Roll/
