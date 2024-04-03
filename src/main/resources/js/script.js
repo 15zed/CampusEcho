@@ -55,9 +55,8 @@ const postsPerPage = 8;
 let currentPage = 1;
 
 
-
 // 在页面加载完成后执行 获取所有帖子并渲染
-window.onload = async function() {
+window.onload = async function () {
     // 获取已存在的帖子
     const existingPosts = await fetchFriendCircleData();
 
@@ -65,7 +64,7 @@ window.onload = async function() {
     initPagination(existingPosts);
 
     // 显示第一页的帖子数据
-    renderPostsByPage(currentPage,existingPosts);
+    renderPostsByPage(currentPage, existingPosts);
 };
 
 // 初始化分页
@@ -82,9 +81,9 @@ function initPagination(allPosts) {
     for (let i = 1; i <= totalPages; i++) {
         const pageButton = document.createElement("button");
         pageButton.textContent = i;
-        pageButton.addEventListener("click", function() {
+        pageButton.addEventListener("click", function () {
             currentPage = i;
-            renderPostsByPage(currentPage,allPosts);
+            renderPostsByPage(currentPage, allPosts);
             updatePaginationButtons();
         });
         // 只显示当前页及其相邻的两个页码按钮
@@ -100,8 +99,7 @@ function initPagination(allPosts) {
 }
 
 // 根据当前页码显示帖子数据
-async function renderPostsByPage(page,allPosts) {
-    // const allPosts = await fetchFriendCircleData();
+async function renderPostsByPage(page, allPosts) {
 
     const startIndex = (page - 1) * postsPerPage;
     const endIndex = startIndex + postsPerPage;
@@ -132,18 +130,14 @@ function updatePaginationButtons() {
         }
     });
 
-    // 更新显示当前页和总页数的元素
-    // const pageInfoElement = document.getElementById("page-info");
-    // pageInfoElement.textContent = `当前页: ${currentPage}，共 ${paginationButtons.length} 页`;
-
-    updatePageInfo(currentPage,paginationButtons.length);
+    updatePageInfo(currentPage, paginationButtons.length);
 }
 
 // 渲染帖子和评论
 function renderPosts(infosWithComments) {
     const postsList = document.getElementById("posts-list");
 
-    infosWithComments.forEach(({ info, comments }) => {
+    infosWithComments.forEach(({info, comments}) => {
         const postElement = createPostElement(info);
         const commentsContainer = document.createElement("div");
 
@@ -214,7 +208,7 @@ function createPostElement(info) {
         showCommentInput(info.id); // 传入帖子ID
     };
     // postElement.appendChild(commentButton);
-    postElement.insertBefore(commentButton,commentsContainer);
+    postElement.insertBefore(commentButton, commentsContainer);
 
     // 添加点赞按钮
     const likeButton = document.createElement("button");
@@ -223,13 +217,13 @@ function createPostElement(info) {
         toggleLike(info.id); // 切换点赞状态
     };
     // postElement.appendChild(likeButton);
-    postElement.insertBefore(likeButton,commentsContainer);
+    postElement.insertBefore(likeButton, commentsContainer);
 
     // 添加点赞数量显示
     const likeCountElement = document.createElement("span");
     likeCountElement.className = "likes-count";
     likeCountElement.textContent = `点赞数: ${info.likes}`;
-    postElement.insertBefore(likeCountElement,commentsContainer);
+    postElement.insertBefore(likeCountElement, commentsContainer);
 
     // 添加评论输入框
     const commentInput = document.createElement("textarea");
@@ -244,14 +238,13 @@ function createPostElement(info) {
     postCommentButton.style.display = "none";
     postCommentButton.id = `post-comment-button-${info.id}`; // 设置发表评论按钮的ID
     postCommentButton.onclick = function () {
-        if(commentInput.value == null || commentInput.value.trim() === "") {
+        if (commentInput.value == null || commentInput.value.trim() === "") {
             alert("评论不能为空！");
             return;
         }
         createComment(info.id, commentInput.value); // 传入帖子ID和评论内容
     };
     postElement.appendChild(postCommentButton);
-
 
 
     if (avatarElement != null) {
@@ -290,7 +283,7 @@ function getFormattedTime() {
     const minutes = ('0' + now.getMinutes()).slice(-2);
     const seconds = ('0' + now.getSeconds()).slice(-2);
     //拼接为String
-    const formattedTime = year + "-" + month + "-" + day +" "+ hours + ":" + minutes + ":" + seconds;
+    const formattedTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes + ":" + seconds;
     return formattedTime;
 }
 
@@ -330,8 +323,6 @@ function createCommentElement(commentInfo) {
     const commentElement = document.createElement("div");
     commentElement.className = "comment";
 
-    // 添加评论者头像等信息
-    // 这里你可以根据评论信息创建合适的DOM结构
 
     // 添加评论文本
     const textElement = document.createElement("p");
@@ -379,10 +370,9 @@ function updateLikesCountOnPage(id, likesCount) {
 
 
 //回到登录页
-function getBackToLogin(){
+function getBackToLogin() {
     window.location.href = '/user/forward';
 }
-
 
 
 // 显示发表帖子的输入框
@@ -392,7 +382,7 @@ function showPostInput() {
 }
 
 //去我的主页
-function toMyHome(){
+function toMyHome() {
     const jsonUser = document.getElementById("user").innerText;
     const user = JSON.parse(jsonUser);
     redirectToUserPage(user.userId);
@@ -409,6 +399,7 @@ async function createPost() {
     const jsonUser = document.getElementById("user").innerText;
 
     const user = JSON.parse(jsonUser);
+
     const userAvatarUrl = user.head; // 替换成实际的用户头像路径
 
     const formattedTime = getFormattedTime();
@@ -505,18 +496,7 @@ async function showHotPosts() {
         initPagination(hotPostsData);
 
         // 显示第一页的帖子数据
-        renderPostsByPage(currentPage,hotPostsData);
-
-        // 渲染热门帖子数据
-        // renderPosts(hotPostsData);
-
-        // // 计算并更新总页数
-        // const totalPages = Math.ceil(hotPostsData.length / postsPerPage);
-        //
-        // // 更新页面元素，保留分页控件的显示，并显示当前页和总页数
-        // updatePageInfo(currentPage, totalPages);
-
-        // updatePaginationButtons()
+        renderPostsByPage(currentPage, hotPostsData);
 
 
     } catch (error) {
@@ -531,7 +511,6 @@ async function searchPost() {
         // 获取搜索到的帖子数据
         const response = await fetch("/api/search/" + keyword);
         const data = await response.json();
-
 
 
         // 检查数据是否为空
@@ -564,9 +543,9 @@ async function searchPost() {
             // 数据为空，显示提示信息
             showNoRecordsMessage();
             //返回主页面
-            setTimeout(function (){
+            setTimeout(function () {
                 window.location.href = "/api/welcome";
-            },2000);
+            }, 2000);
 
         }
     } catch (error) {
@@ -584,7 +563,6 @@ function showNoRecordsMessage() {
     }
 
 
-
 }
 
 // 每日推荐按钮点击事件
@@ -597,18 +575,7 @@ async function dailyRecommendations() {
         initPagination(recommendPostsData);
 
         // 显示第一页的帖子数据
-        renderPostsByPage(currentPage,recommendPostsData);
-
-        // 渲染热门帖子数据
-        // renderPosts(hotPostsData);
-
-        // // 计算并更新总页数
-        // const totalPages = Math.ceil(hotPostsData.length / postsPerPage);
-        //
-        // // 更新页面元素，保留分页控件的显示，并显示当前页和总页数
-        // updatePageInfo(currentPage, totalPages);
-
-        // updatePaginationButtons()
+        renderPostsByPage(currentPage, recommendPostsData);
 
 
     } catch (error) {

@@ -7,10 +7,7 @@ async function deletePost(id) {
             });
 
             if (response.ok) {
-                // 删除成功，更新帖子列表
-                // const updatedPosts = await response.json(); // 获取删除后的帖子列表
-                // renderPosts(updatedPosts);//渲染帖子
-                //这里不调用renderPosts()函数来渲染帖子，因为这个函数渲染后的页面效果和原来页面使用thymeleaf渲染的效果不一样
+                //这里不调用renderPosts(updatedPosts)函数来渲染帖子，因为这个函数渲染后的页面效果和原来页面使用thymeleaf渲染的效果不一样
                 window.location.reload();//重新加载页面
             } else {
                 console.error('Failed to delete post.');
@@ -20,6 +17,7 @@ async function deletePost(id) {
         }
     }
 }
+
 
 // 发表帖子
 async function homePost() {
@@ -72,6 +70,7 @@ async function homePost() {
     redirectToUserPage(user.userId);
 }
 
+
 // 发表评论
 async function homeComment(id, commentText) {
     const currentUserHomeId = document.getElementById("currentUserHomeId").innerText;
@@ -88,17 +87,22 @@ async function homeComment(id, commentText) {
     };
 
     // 向后端发送评论数据
-    const newCommentData = await sendCommentToBackend(commentInfo);
-
-
+    await sendCommentToBackend(commentInfo);
     //调用去主页的函数，由thymeleaf重新渲染页面
     redirectToUserPage(currentUserHomeId);
 }
 
 //回到上一页
-function getBackToPreviousPage(){
-    window.history.go(-1);
+function getBackToPreviousPage() {
+    // window.history.go(-1);
+    window.location.href = '/api/welcome';
 }
+
+function getBack(currentId) {
+    window.location.href = `/user/${currentId}`;
+    // window.history.go(-1);
+}
+
 
 //关注
 async function follow(userId) {
@@ -111,20 +115,19 @@ async function follow(userId) {
 }
 
 
-
 //查看关注列表
-function myFollows(){
+function myFollows() {
     window.location.href = '/api/follow/getFollows';
 }
 
 //查看粉丝列表
-function myFans(){
+function myFans() {
     window.location.href = '/api/fans/getFans';
 }
 
 //取消关注
-async function unfollow(userId){
-    const response = await fetch(`/api/unfollow/${userId}`,{
+async function unfollow(userId) {
+    const response = await fetch(`/api/unfollow/${userId}`, {
         method: 'PUT',
     });
     const result = await response.text();

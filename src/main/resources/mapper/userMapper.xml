@@ -22,8 +22,8 @@
     <select id="selectById" resultType="com.hgc.school.vo.User">
         SELECT * FROM t_user WHERE user_id = #{id};
     </select>
-    <select id="selectAll" resultType="com.hgc.school.vo.User">
-        SELECT * FROM t_user;
+    <select id="selectPart" resultType="com.hgc.school.vo.User">
+        SELECT * FROM t_user LIMIT 1000;
     </select>
     <select id="selectIds" resultType="java.lang.Integer">
         SELECT user_id FROM t_user;

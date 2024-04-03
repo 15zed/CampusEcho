@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>User Page</title>
+    <title>用户主页</title>
     <link rel="stylesheet" href="/css/userHome.css">
     <script src="/js/userHome.js"></script>
     <script src="/js/script.js"></script>
@@ -11,9 +11,12 @@
     <button th:if="${sessionUser.userId  == user.userId}" onclick="showPostInput()">发表帖子</button>
     <button th:if="${sessionUser.userId  == user.userId}" onclick="myFollows()">我的关注</button>
     <button th:if="${sessionUser.userId  == user.userId}" onclick="myFans()">我的粉丝</button>
-    <button th:if="${sessionUser.userId  != user.userId && sessionUser.follows != null &&!sessionUser.follows.contains(user.userId.toString())}" onclick="follow(document.getElementById('currentUserHomeId').innerText)">关注ta</button>
-    <button  onclick="getBackToPreviousPage()">返回上一页</button>
-    <button th:if="${sessionUser.userId  == user.userId}" onclick="window.location.href = '/user/logout'">退出登录</button>
+    <button th:if="${sessionUser.userId  != user.userId  && sessionUser.follows != null && !sessionUser.follows.contains(user.userId.toString())}"
+            onclick="follow(document.getElementById('currentUserHomeId').innerText)">关注ta
+    </button>
+    <button onclick="getBackToPreviousPage()">返回上一页</button>
+    <button th:if="${sessionUser.userId  == user.userId}" onclick="window.location.href = '/user/logout'">退出登录
+    </button>
     <div id="post-input" style="display: none;">
         <textarea id="post-text" placeholder="分享你的心情..."></textarea>
         <input type="file" th:multiple="multiple" id="post-image" accept="image/*" placeholder="选择图片">
@@ -34,7 +37,7 @@
 <h1 th:text="${user.username}"></h1>
 <p hidden th:text="${session.user}" id="user"></p>
 <p hidden th:text="${user.userId}" id="currentUserHomeId"></p>
-<img th:src="@{${'/get/'+user.head}}" alt="User Avatar" class="img">
+<img th:src="${'/get/'+user.head}" alt="User Avatar" class="img">
 <table>
     <tr style="width: 265px;height: 56px">
         <td>性别：</td>
@@ -53,7 +56,7 @@
 
 <!-- 用户发布的帖子列表 -->
 <div th:each="list,iterStat : ${dtoList}" class="post" th:id="${'post-'+list.info.id}">
-        <!-- 列表长度   -->
+    <!-- 列表长度   -->
     <div th:text="${#lists.size(dtoList)}" hidden id="listSize"></div>
     <div>
         <!-- 帖子内容 -->
@@ -83,41 +86,47 @@
         <p th:text="${list.info.time}" class="time"></p>
 
         <!-- 评论按钮 -->
-        <button type="button"  th:id="${'button'+iterStat.index}">评论</button>
+        <button type="button" th:id="${'button'+iterStat.index}">评论</button>
 
         <!-- 评论输入框       -->
-        <textarea style="display: none" placeholder="发表评论..."  th:id="${'comment-input-'+list.info.id}" cols="30" rows="10"></textarea>
+        <textarea style="display: none" placeholder="发表评论..." th:id="${'comment-input-'+list.info.id}" cols="30"
+                  rows="10"></textarea>
 
 
         <!-- 发表评论按钮 -->
-        <button type="button" style="display: none" th:class="${'post-comment-button-'+iterStat.index}" th:id="${'post-comment-button-'+list.info.id}">发表评论</button>
+        <button type="button" style="display: none" th:class="${'post-comment-button-'+iterStat.index}"
+                th:id="${'post-comment-button-'+list.info.id}">发表评论
+        </button>
 
         <!-- 点赞按钮       -->
         <button type="button" th:class="${'like-button-'+iterStat.index}">点赞</button>
 
         <!-- 删除按钮 -->
-<!-- 这样的写法保证了在 JavaScript 中得到的 postId 是一个正确的字符串，即使它包含了一些特殊字符（例如空格、引号等）       -->
-        <button type="button" class="delete-button" th:if="${sessionUser.userId  == user.userId}" th:onclick="'deletePost(\'' + ${list.info.id} + '\')'">删除</button>
+        <!-- 这样的写法保证了在 JavaScript 中得到的 postId 是一个正确的字符串，即使它包含了一些特殊字符（例如空格、引号等）       -->
+        <button type="button" class="delete-button" th:if="${sessionUser.userId  == user.userId}"
+                th:onclick="'deletePost(\'' + ${list.info.id} + '\')'">删除
+        </button>
     </div>
 </div>
 </body>
 <script>
+
     const listSize = document.getElementById("listSize").innerText;
     for (let i = 0; i < listSize; i++) {
-        document.getElementById("button"+String(i)).onclick = function (){
+        document.getElementById("button" + String(i)).onclick = function () {
             const infoId = document.getElementById(String(i)).innerText;
             showCommentInput(infoId);
         }
-        document.getElementsByClassName('post-comment-button-'+String(i))[0].onclick = function (){
+        document.getElementsByClassName('post-comment-button-' + String(i))[0].onclick = function () {
             const infoId = document.getElementById(String(i)).innerText;
-            const comment = document.getElementById('comment-input-'+infoId).value;
-            if(comment == null || comment.trim() === ''){
-                 alert('评论不能为空');
-                 return;
-             }
-            homeComment(infoId,comment);// 传入帖子ID和评论内容
+            const comment = document.getElementById('comment-input-' + infoId).value;
+            if (comment == null || comment.trim() === '') {
+                alert('评论不能为空');
+                return;
+            }
+            homeComment(infoId, comment);// 传入帖子ID和评论内容
         }
-        document.getElementsByClassName('like-button-'+String(i))[0].onclick = function () {
+        document.getElementsByClassName('like-button-' + String(i))[0].onclick = function () {
             const infoId = document.getElementById(String(i)).innerText;
             toggleLike(infoId);
         }

@@ -6,11 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
-@Data
-@Getter
+
 public class ESIndexUtil {
-    public static String USER_INDEX = "user";
-    public static String COMMENT_INDEX = "comment";
-    public static String INFO_INDEX = "info";
+    public static final String COMMENT_INDEX = "comment";
+    public static final String INFO_INDEX = "info";
 
 }

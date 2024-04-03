@@ -1,7 +1,6 @@
 package com.hgc.school.mapper;
 
 import com.hgc.school.vo.User;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,13 +16,13 @@ public interface UserMapper {
 
     User selectById(Integer userId);
 
-    void updateLikeList(User user);
+    int updateLikeList(User user);
 
     void updateFollows(User user1);
 
     void updateFans(User user2);
 
-    List<User> selectAll();
+    List<User> selectPart();
 
     List<Integer> selectIds();
 }

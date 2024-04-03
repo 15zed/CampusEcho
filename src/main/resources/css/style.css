@@ -18,6 +18,7 @@ body {
     flex-wrap: wrap;
     flex-direction: row;
 }
+
 /* 每个帖子*/
 .post {
     border: 1px solid #ccc;
@@ -34,7 +35,7 @@ body {
     border-radius: 5px;
 }
 
-.post .avatar{
+.post .avatar {
     width: 100px;
     height: 100px;
     border-radius: 50%;

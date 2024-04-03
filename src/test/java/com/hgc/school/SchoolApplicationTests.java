@@ -6,6 +6,7 @@ import com.hgc.school.utils.ESIndexUtil;
 import com.hgc.school.vo.CommentInfo;
 import com.hgc.school.vo.Info;
 import com.hgc.school.vo.User;
+import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -27,6 +28,7 @@ import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.rest.RestStatus;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
@@ -44,6 +46,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
+@Slf4j
 class SchoolApplicationTests {
     @Autowired
     RestHighLevelClient restHighLevelClient;
@@ -57,16 +60,18 @@ class SchoolApplicationTests {
         CreateIndexResponse response = restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);
         System.out.println(response);
     }
-   //测试获取索引 索引相当于数据库 只能判断是否存在
+
+    //测试获取索引 索引相当于数据库 只能判断是否存在
     @Test
     void test1() throws IOException {
         GetIndexRequest request = new GetIndexRequest("test3");
         boolean exists = restHighLevelClient.indices().exists(request, RequestOptions.DEFAULT);
         System.out.println(exists);
     }
+
     //测试删除索引
     @Test
-    void test2() throws IOException{
+    void test2() throws IOException {
         DeleteIndexRequest request = new DeleteIndexRequest("test3");
         AcknowledgedResponse response = restHighLevelClient.indices().delete(request, RequestOptions.DEFAULT);
         System.out.println(response);
@@ -74,30 +79,33 @@ class SchoolApplicationTests {
     }
 
     //测试创建文档 PUT /test3/t_user/1
-   @Test
+    @Test
     void test3() throws IOException {
-       User user = userMapper.selectById(8);
-       IndexRequest request = new IndexRequest("test3");
-       request.id(String.valueOf(user.getUserId()));
-       request.source(JSON.toJSONString(user), XContentType.JSON);
-       IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
-       System.out.println(response.toString());
-   }
-  //测试获取文档
-   @Test
+        User user = userMapper.selectById(8);
+        IndexRequest request = new IndexRequest("test3");
+        request.id(String.valueOf(user.getUserId()));
+        request.source(JSON.toJSONString(user), XContentType.JSON);
+        IndexResponse response = restHighLevelClient.index(request, RequestOptions.DEFAULT);
+        System.out.println(response.toString());
+    }
+
+    //测试获取文档
+    @Test
     void test4() throws IOException {
-       GetRequest request = new GetRequest("test3", "8");//查询test3中 id为8的数据
-       GetResponse response = restHighLevelClient.get(request, RequestOptions.DEFAULT);
-       System.out.println(response.getSourceAsString());//获取source中的数据 只包含数据库中的数据
-       System.out.println(response);//获取所有数据 就是kibana get查出的结果
-   }
-   //测试删除文档
+        GetRequest request = new GetRequest("test3", "8");//查询test3中 id为8的数据
+        GetResponse response = restHighLevelClient.get(request, RequestOptions.DEFAULT);
+        System.out.println(response.getSourceAsString());//获取source中的数据 只包含数据库中的数据
+        System.out.println(response);//获取所有数据 就是kibana get查出的结果
+    }
+
+    //测试删除文档
     @Test
     void test5() throws IOException {
         DeleteRequest request = new DeleteRequest("test3", "1");
         DeleteResponse response = restHighLevelClient.delete(request, RequestOptions.DEFAULT);
         System.out.println(response.status());
     }
+
     //测试查询文档
     @Test
     void test6() throws IOException {
@@ -152,14 +160,13 @@ class SchoolApplicationTests {
         SearchHit[] hits = response.getHits().getHits();
         for (SearchHit hit : hits) {
             String sourceAsString = hit.getSourceAsString();
-            System.out.println("hit:"+sourceAsString);
-            if(hit.getSourceAsMap().size() == 5){
+            System.out.println("hit:" + sourceAsString);
+            if (hit.getSourceAsMap().size() == 5) {
                 Integer pubId = (Integer) hit.getSourceAsMap().get("pubId");
-                System.out.println("Comment:"+pubId);
-            }else {
-                System.out.println("Info:"+JSON.parseObject(sourceAsString,Info.class));
+                System.out.println("Comment:" + pubId);
+            } else {
+                System.out.println("Info:" + JSON.parseObject(sourceAsString, Info.class));
             }
-
 
 
         }
@@ -194,12 +201,32 @@ class SchoolApplicationTests {
         searchRequest.source(searchSourceBuilder);
 
 
-        SearchResponse response  = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
 
         SearchHit[] hits = response.getHits().getHits();
         System.out.println(hits.length);
         for (SearchHit hit : hits) {
             System.out.println(hit.getSourceAsString());
         }
+    }
+
+    @Test
+    void test10() throws IOException {
+        // 构建更新请求
+        UpdateRequest updateRequest = new UpdateRequest(ESIndexUtil.INFO_INDEX, "106");
+
+        // 构建部分更新的文档
+        Map<String, Object> doc = new HashMap<>();
+        Integer likes = 0;
+        doc.put("likes", likes);
+
+        // 使用doc方法进行部分更新
+        updateRequest.doc(doc, XContentType.JSON);
+
+        // 执行更新请求
+        UpdateResponse updateResponse = restHighLevelClient.update(updateRequest, RequestOptions.DEFAULT);
+        System.out.println(updateResponse.status());
+        RestStatus status = updateResponse.status();
+        int status1 = status.getStatus();
     }
 }

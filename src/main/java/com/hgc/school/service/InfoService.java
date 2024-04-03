@@ -1,26 +1,40 @@
 package com.hgc.school.service;
 
+import com.hgc.school.dto.InfoWithCommentsDTO;
+import com.hgc.school.vo.Flag;
 import com.hgc.school.vo.Info;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Future;
 
 /**
  *
  */
 public interface InfoService {
+
+
     List<Info> getData();
 
-    Info add(Info info);
+    Future<Integer> add(Info info) ;
 
-    void updateById(Integer id);
+    Future<Integer> updateById(Integer id);
 
     Info selectById(Integer id);
 
     List<Info> selectInfos(Integer userId);
 
-    void deleteInfoWithComments(Integer id);
+    Future<Integer> deleteInfoWithComments(Integer id);
 
-    void updateComments(Integer pubId);
+    Future<Integer> updateComments(Integer pubId);
 
-    List<Integer> selectAllId();
+
+
+    /**
+     * 获取所有帖子和评论
+     * @return 一个集合
+     */
+    List<InfoWithCommentsDTO> getAllInfoAndComments();
+
+    List<InfoWithCommentsDTO> getDtoByUserId(Integer userId);
 }

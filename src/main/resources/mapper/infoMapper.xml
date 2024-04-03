@@ -12,7 +12,7 @@
         <result column="avatar" property="avatar"/>
         <result column="likes" property="likes"/>
     </resultMap>
-    <insert id="addInfo"  useGeneratedKeys="true" keyProperty="id">
+    <insert id="addInfo"  useGeneratedKeys="true" keyColumn="" keyProperty="id">
         INSERT INTO t_pub(p_time,p_img,p_text,userId,avatar,category) VALUES(#{time},#{img},#{text},#{userId},#{avatar},#{category});
     </insert>
     <update id="updateById">

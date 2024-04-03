@@ -24,7 +24,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import redis.clients.jedis.Jedis;
@@ -40,7 +44,8 @@ import java.util.List;
 @MapperScan("com.hgc.school.mapper")
 @EnableScheduling
 @ServletComponentScan
-public class SchoolApplication  implements InitializingBean, DisposableBean {
+@EnableAsync
+public class SchoolApplication implements InitializingBean, DisposableBean {
     @Autowired
     RestHighLevelClient restHighLevelClient;
     @Autowired
@@ -56,7 +61,11 @@ public class SchoolApplication  implements InitializingBean, DisposableBean {
         SpringApplication.run(SchoolApplication.class, args);
     }
 
-
+    /**
+     * 将一部分用户数据放到redis，将所有的帖子和评论放到ES
+     *
+     * @throws Exception
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
         BulkRequest request = new BulkRequest();
@@ -64,41 +73,30 @@ public class SchoolApplication  implements InitializingBean, DisposableBean {
         Jedis jedis = jedisPool.getResource();
         List<CommentInfo> commentList = commentMapper.selectAll();
         List<Info> infoList = infoMapper.selectAll();
-        List<User> userList = userMapper.selectAll();
+        List<User> userList = userMapper.selectPart();
         for (CommentInfo comment : commentList) {
             String jsonComment = JSON.toJSONString(comment);
-            jedis.set("comment:"+ comment.getCommentId(),jsonComment);
-            jedis.expire("comment:"+comment.getCommentId(),60*60*24);
-            jedis.lpush("comment:pubId:"+comment.getPubId(), String.valueOf(comment.getCommentId()));
             request.add(new IndexRequest("comment").id(String.valueOf(comment.getCommentId())).source(jsonComment, XContentType.JSON));
             restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
         }
-        for(Info info : infoList){
+        for (Info info : infoList) {
             String jsonInfo = JSON.toJSONString(info);
-            jedis.set("info:"+info.getId(),jsonInfo);
-            jedis.lpush("info:userId:"+info.getUserId(), String.valueOf(info.getId()));
-            jedis.expire("info:"+info.getId(),60*60*24);
             request.add(new IndexRequest("info").id(String.valueOf(info.getId())).source(jsonInfo, XContentType.JSON));
             restHighLevelClient.bulk(request, RequestOptions.DEFAULT);
         }
         for (User user : userList) {
-            String jsonUser  = JSON.toJSONString(user);
-            jedis.set("user:"+user.getUserId(),jsonUser);
-            jedis.set("user:"+user.getUsername(), String.valueOf(user.getUserId()));
+            String jsonUser = JSON.toJSONString(user);
+            jedis.setex("user:" + user.getUserId(), 86400, jsonUser);
+            jedis.setex("user:" + user.getUsername(), 86400, String.valueOf(user.getUserId()));
         }
         jedis.close();
     }
 
-//    @Bean
-//    public FilterRegistrationBean filterRegistrationBean(){
-//        FilterRegistrationBean<LoginCheckFilter> bean = new FilterRegistrationBean<LoginCheckFilter>();
-//        bean.setFilter(new LoginCheckFilter());
-//        bean.setOrder(1);
-//        return bean;
-//    }
-
+    /**
+     * 为了测试方便，每次重启，清空redis
+     */
     @Override
-    public void destroy() throws Exception {
+    public void destroy() {
         Jedis jedis = jedisPool.getResource();
         jedis.flushAll();
         jedis.close();

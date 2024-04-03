@@ -1,15 +1,15 @@
 spring:
   redis:
-    host: localhost
+    host: 62.234.165.51
     port: 6379
     database: 0
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/school?useSSL=false
-      username: root
-      password: kanghui01
+      url: jdbc:mysql://62.234.165.51:3306/school?useSSL=false
+      username: zed
+      password: 123456
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   type-handlers-package: com.hgc.school.config.StringArrayTypeHandler

@@ -13,4 +13,10 @@
     <select id="selectAll" resultType="com.hgc.school.vo.CommentInfo">
         SELECT * FROM t_comment;
     </select>
+    <select id="selectIdListByInfoId" resultType="java.lang.Integer">
+        SELECT commentId FROM t_comment WHERE pubId = #{id};
+    </select>
+    <select id="selectById" resultType="com.hgc.school.vo.CommentInfo">
+        SELECT * FROM t_comment WHERE commentId = #{id}
+    </select>
 </mapper>
