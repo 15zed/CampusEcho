@@ -18,7 +18,6 @@ async function deletePost(id) {
     }
 }
 
-
 // 发表帖子
 async function homePost() {
     const text = document.getElementById("post-text").value;

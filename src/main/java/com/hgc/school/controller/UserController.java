@@ -61,7 +61,8 @@ public class UserController {
         ModelAndView modelAndView = new ModelAndView();
         if (!file.isEmpty()) {
             String filename = userService.handFile(file);
-            user.setHead(filename);
+            String newName = filename.replaceAll("''", "");
+            user.setHead(newName);
         }
         userService.add(user);
         modelAndView.setViewName("login");

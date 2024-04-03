@@ -371,7 +371,7 @@ public class UserServiceImpl implements UserService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        return JSON.toJSONString(filename);
+        return filename;
     }
 
     /**

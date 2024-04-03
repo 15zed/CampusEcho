@@ -460,7 +460,7 @@ async function uploadImageToBackend(image) {
             body: formData,
         });
 
-        const data = await response.json();
+        const data = await response.text();
         return data; // 假设后端返回的数据包含图片的URL
     } catch (error) {
         console.error('Error uploading image:', error);
