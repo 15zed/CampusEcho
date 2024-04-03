@@ -13,4 +13,4 @@
   * 数据库：MySQL Redis
   * 搜索引擎：ElasticSearch
   * 框架： Spring Spring MVC MyBatis Spring Boot
-  * 前端：HTML CSS JavaScript Thymeleaf 
+  * 前端：HTML CSS JavaScript Thymeleaf BootStrap
