@@ -1,4 +1,4 @@
-# CampusEcho-BC-2024-01
+# CampusEcho
 一个类似于大学表白墙的Spring Boot项目，前后端不分离。
 
 ### 主要功能：
