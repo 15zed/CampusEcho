@@ -257,7 +257,7 @@ public class APIController {
         //更新ES
         // 返回更新后的帖子数据
         Info info = infoService.selectById(id);
-        Integer likes = info.getLikes();
+        Integer likes = info.getLikes() + 1;
         // 构建部分更新的文档
         Map<String, Object> doc = new HashMap<>();
         doc.put("likes", likes);
@@ -283,7 +283,7 @@ public class APIController {
         }
         return ResponseEntity
                 .ok()
-                .body(info);
+                .body(infoService.selectById(id));
     }
 
     /**
@@ -306,7 +306,7 @@ public class APIController {
         //更新ES
         // 返回更新后的帖子数据
         Info info = infoService.selectById(id);
-        Integer likes = info.getLikes();
+        Integer likes = info.getLikes() - 1;
         // 构建部分更新的文档
         Map<String, Object> doc = new HashMap<>();
         doc.put("likes", likes);
@@ -332,7 +332,7 @@ public class APIController {
         }
         return ResponseEntity
                 .ok()
-                .body(info);
+                .body(infoService.selectById(id));
     }
 
     /**
