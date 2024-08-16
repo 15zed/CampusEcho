@@ -1,5 +1,5 @@
 # CampusEcho
-一个类似于大学表白墙的Spring Boot项目，前后端不分离。
+这是一个在线校园社交平台，满足在校师生线上发帖、点赞、评论、关注等需求。
 
 ### 主要功能：
   * 注册登录<br>
@@ -12,7 +12,7 @@
 ### 相关技术：
   * 数据库：MySQL Redis
   * 搜索引擎：ElasticSearch
-  * 框架： Spring Spring MVC MyBatis Spring Boot
+  * 后端： MySQL + Redis + ElasticSearch + Caffeine + MyBatis + Spring Boot + Spring Cloud Alibaba + ShardingJDBC + Canal + RabbitMQ + Dubbo + SSE 
   * 前端：HTML CSS JavaScript Thymeleaf BootStrap
 
 ### 效果预览：
