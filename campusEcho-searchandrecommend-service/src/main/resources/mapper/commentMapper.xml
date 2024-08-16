@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hgc.campusechosearchandrecommendservice.mapper.CommentMapper">
+
+    <insert id="add">
+        INSERT INTO t_comment(commentId,userId,pubId,text,time) VALUES(#{commentId},#{userId},#{pubId},#{text},#{time});
+    </insert>
+    <select id="selectByInfoId" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+         SELECT * FROM t_comment WHERE pubId = #{id};
+    </select>
+    <select id="selectAll" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+        SELECT * FROM t_comment;
+    </select>
+    <select id="selectIdListByInfoId" resultType="java.lang.Integer">
+        SELECT commentId FROM t_comment WHERE pubId = #{id};
+    </select>
+    <select id="selectById" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+        SELECT * FROM t_comment WHERE commentId = #{id}
+    </select>
+</mapper>

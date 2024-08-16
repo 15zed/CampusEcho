@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hgc.campusechosearchandrecommendservice.mapper.InfoMapper">
+    <resultMap id="infoMap" type="com.hgc.campusechomodel.entity.Info">
+        <result column="p_id" property="id"/>
+        <result column="p_time" property="time"/>
+        <result column="p_img" property="img"/>
+        <result column="p_text" property="text"/>
+        <result column="userId" property="userId"/>
+        <result column="avatar" property="avatar"/>
+        <result column="likes" property="likes"/>
+    </resultMap>
+    <insert id="addInfo"  useGeneratedKeys="true" keyColumn="" keyProperty="id">
+        INSERT INTO t_pub(p_time,p_img,p_text,userId,avatar,category) VALUES(#{time},#{img},#{text},#{userId},#{avatar},#{category});
+    </insert>
+    <update id="updateById">
+        UPDATE t_pub SET likes = likes + 1 WHERE p_id = #{id};
+    </update>
+
+    <update id="decreaseUpdateById">
+        UPDATE t_pub SET likes = likes - 1 WHERE p_id = #{id};
+    </update>
+
+    <update id="updateComments">
+        UPDATE t_pub SET comments = comments + 1 WHERE p_id = #{id};
+    </update>
+
+    <update id="cover">
+        UPDATE t_pub SET likes = #{likes} WHERE p_id = #{id};
+    </update>
+
+    <delete id="deleteWithComments">
+        DELETE t_pub,t_comment FROM t_pub LEFT JOIN t_comment  on t_pub.p_id = t_comment.pubId WHERE p_id = #{id};
+    </delete>
+
+    <select id="selectAll" resultMap="infoMap">
+        SELECT * FROM t_pub;
+    </select>
+    <select id="selectById" resultMap="infoMap">
+        SELECT * FROM t_pub WHERE p_id = #{id};
+    </select>
+    <select id="selectInfos" resultMap="infoMap">
+        SELECT * FROM t_pub WHERE userId = #{id};
+    </select>
+    <select id="selectIds" resultType="java.lang.Integer">
+        SELECT p_id FROM t_pub;
+    </select>
+</mapper>

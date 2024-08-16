@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>关注页</title>
+    <link rel="stylesheet" href="/css/userHome.css">
+
+    <script src="/js/userHome.js"></script>
+    <script src="/js/script.js"></script>
+</head>
+<body>
+<p th:text="${sessionUser.userId}" hidden th:id="currentId"></p>
+<h1 th:if="${#lists.size(followList) == 0}">暂无关注</h1>
+<button onclick="getBack(document.getElementById('currentId').innerText)">返回上一页</button>
+<table th:each="user,iterStat :${followList}">
+    <!--  列表长度       -->
+    <p hidden th:text="${#lists.size(followList)}" th:id="listSize"></p>
+    <tr>
+        <!--  每个用户的id   -->
+        <p hidden th:text="${user.userId}" th:id="${iterStat.index}"></p>
+        <td><h1 th:text="${user.username}"></h1></td>
+        <td><img th:src="@{${'/get/'+user.head}}" alt="User Avatar" class="img"></td>
+        <td>
+            <button th:class="${'primary-button-'+iterStat.index}">查看主页</button>
+        </td>
+        <td>
+            <button th:class="${'unfollow-button-'+iterStat.index}">取消关注</button>
+        </td>
+    </tr>
+</table>
+</body>
+<script>
+    const listSize = document.getElementById("listSize").innerText;
+    for (let i = 0; i < listSize; i++) {
+        document.getElementsByClassName("primary-button-" + String(i))[0].onclick = function () {
+            const userId = document.getElementById(String(i)).innerText;
+            redirectToUserPage(userId);
+        }
+        document.getElementsByClassName("unfollow-button-" + String(i))[0].onclick = function () {
+            const userId = document.getElementById(String(i)).innerText;
+            unfollow(userId);
+        }
+    }
+</script>
+</html>
+

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hgc.campusechocommentservice.mapper.CommentMapper">
+
+
+
+    <insert id="add">
+        INSERT INTO t_comment(commentId,userId,pubId,text,time,reply_user_id,reply_comment_id)
+        VALUES(#{commentId},#{userId},#{pubId},#{text},#{time},#{replyUserId},#{replyCommentId});
+    </insert>
+
+    <insert id="batchAdd" parameterType="java.util.List">
+        INSERT INTO t_comment(commentId,userId,pubId,text,time, reply_user_id, reply_comment_id) VALUES
+        <foreach collection="comments" item="comment" separator=",">
+            (#{comment.commentId},#{comment.userId}, #{comment.pubId}, #{comment.text},#{comment.time}, #{comment.replyUserId},
+            #{comment.replyCommentId})
+        </foreach>
+    </insert>
+
+
+    <delete id="deleteByCommentId">
+        DELETE FROM t_comment WHERE commentId = #{id};
+    </delete>
+    <delete id="deleteAll">
+        DELETE FROM t_comment WHERE commentId IN
+        <foreach collection="list" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectByInfoId" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+        SELECT * FROM t_comment WHERE pubId = #{param1} ORDER BY time ASC LIMIT #{param2} , #{param3};
+    </select>
+    <select id="selectAll" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+        SELECT * FROM t_comment;
+    </select>
+    <select id="selectIdListByInfoId" resultType="java.lang.Integer">
+        SELECT commentId FROM t_comment WHERE pubId = #{id};
+    </select>
+    <select id="selectById" resultType="com.hgc.campusechomodel.entity.CommentInfo">
+        SELECT * FROM t_comment WHERE commentId = #{id}
+    </select>
+</mapper>

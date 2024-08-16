@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hgc.campusechouserservice.mapper.UserMapper">
+
+    <insert id="addUser">
+        INSERT INTO t_user(head,username,password,sex,area,contact，createtime,logintime) VALUES(#{head},#{username},#{password},#{sex},#{area},#{contact},now(),now());
+    </insert>
+    <insert id="addFollow">
+        INSERT INTO following(from_user_id,to_user_id,type,update_time) VALUES(#{param1},#{param2},1,unix_timestamp(now()));
+    </insert>
+    <insert id="addFollower">
+        INSERT INTO follower(from_user_id,to_user_id,type,update_time) VALUES(#{fromUserId},#{toUserId},#{type},#{updateTime});
+    </insert>
+    <update id="updateLikeList">
+        UPDATE t_user SET likelist = #{likelist} WHERE user_id = #{userId};
+    </update>
+    <update id="updateFollows">
+        UPDATE t_user SET follows = #{follows} WHERE user_id = #{userId};
+    </update>
+    <update id="updateFans">
+        UPDATE t_user SET fans = #{fans} WHERE user_id = #{userId};
+    </update>
+    <update id="updateFollow">
+        UPDATE following SET type = #{param3}, update_time = unix_timestamp(now())  WHERE from_user_id = #{param1} AND to_user_id = #{param2};
+    </update>
+    <update id="updateFollower">
+        UPDATE follower SET type = #{type}, update_time = #{updateTime}  WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId};
+    </update>
+    <update id="updateLoginTime">
+        UPDATE t_user SET logintime = now() WHERE user_id = #{userId};
+    </update>
+    <select id="selectUser" resultType="com.hgc.campusechomodel.entity.User">
+        SELECT * FROM t_user WHERE username = #{name};
+    </select>
+    <select id="selectById" resultType="com.hgc.campusechomodel.entity.User">
+        SELECT * FROM t_user WHERE user_id = #{id};
+    </select>
+
+    <select id="selectIds" resultType="java.lang.Integer">
+        SELECT user_id FROM t_user;
+    </select>
+    <select id="selectFollowing" resultType="com.hgc.campusechomodel.entity.Following">
+        SELECT * FROM following WHERE from_user_id = #{param1} AND to_user_id = #{param2} AND type = 1;
+    </select>
+    <select id="selectFollowingIds" resultType="com.hgc.campusechomodel.entity.Following">
+        SELECT * FROM following WHERE from_user_id = #{param1} AND type = 1 ORDER BY update_time DESC;
+    </select>
+    <select id="selectFollowerIds" resultType="com.hgc.campusechomodel.entity.Follower">
+        SELECT * FROM follower WHERE to_user_id = #{param1} AND type = 1 ORDER BY update_time DESC LIMIT #{param3} OFFSET #{param2};
+    </select>
+    <select id="selectFollower" resultType="com.hgc.campusechomodel.entity.Follower">
+        SELECT * FROM follower WHERE from_user_id = #{param2} AND to_user_id = #{param1} AND type = 1;
+    </select>
+    <select id="selectFollowsCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM following WHERE from_user_id = #{param1} AND type = 1;
+    </select>
+    <select id="selectPart" resultType="java.lang.Integer">
+        SELECT user_id FROM t_user WHERE logintime >= NOW() - INTERVAL 1 MONTH;
+    </select>
+    <select id="selectIfExists" resultType="com.hgc.campusechomodel.entity.Following">
+        SELECT * FROM following WHERE from_user_id = #{param1} AND to_user_id = #{param2};
+    </select>
+</mapper>

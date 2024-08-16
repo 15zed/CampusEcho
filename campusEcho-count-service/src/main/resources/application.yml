@@ -1,0 +1,44 @@
+# 应用服务 WEB 访问端口
+server:
+  port: 8085
+
+spring:
+  application:
+    name: count-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  session:
+    store-type: redis
+    timeout: 2592000
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/campusecho?useSSL=false
+      username: root
+      password: kanghui01
+
+dubbo:
+  application:
+    name: count-service
+  registry:
+    address: nacos://${nacos.address:127.0.0.1}:8848?username=nacos&password=nacos
+  protocol:
+    name: dubbo
+    port: 20881
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-handlers-package: com.hgc.campusechocommon.config.StringArrayTypeHandler
+  configuration:
+    # 开启a_column  到  aColumn 的映射
+    map-underscore-to-camel-case: true
+#seata:
+#  application-id: 8082
+

@@ -1,0 +1,39 @@
+server:
+  port: 8087
+
+spring:
+  application:
+    name: campusecho-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      default-filters:
+        - name: GlobalAuthFilter
+      routes:
+        - id: comment-service
+          uri: lb://comment-service
+          predicates:
+            - Path=/comment/**
+        - id: count-service
+          uri: lb://count-service
+          predicates:
+            - Path=/count/**
+        - id: hotPosts-service
+          uri: lb://hotPosts-service
+          predicates:
+            - Path=/hotPosts/**
+        - id: posts-service
+          uri: lb://posts-service
+          predicates:
+            - Path=/posts/**
+        - id: searchandrecommend-service
+          uri: lb://searchandrecommend-service
+          predicates:
+            - Path=/searchandrecommend/**
+        - id: user-service
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+

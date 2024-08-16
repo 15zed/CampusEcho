@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hgc.campusechocountservice.mapper.CountMapper">
+
+    <delete id="deleteInfoRecord">
+        DELETE FROM info_count WHERE infoId = #{infoId}
+    </delete>
+    <delete id="deleteUserRecord">
+        DELETE FROM user_count WHERE userId = #{userId}
+    </delete>
+
+    <select id="getComments" resultType="java.lang.Long">
+        SELECT comment_count FROM info_count WHERE infoId = #{infoId}
+    </select>
+    <select id="getLikes" resultType="java.lang.Long">
+        SELECT like_count FROM info_count WHERE infoId = #{infoId}
+    </select>
+    <select id="getFollows" resultType="java.lang.Long">
+        SELECT follow_count FROM user_count WHERE userId = #{userId}
+    </select>
+    <select id="getFans" resultType="java.lang.Long">
+        SELECT fans_count FROM user_count WHERE userId = #{userId}
+    </select>
+    <select id="existInfo" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT * FROM info_count WHERE infoId = #{infoId})
+    </select>
+    <select id="existUser" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT * FROM user_count WHERE userId = #{userId})
+    </select>
+</mapper>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <title>帖子网站</title>
+</head>
+<body>
+<p hidden th:text="${#session.getAttribute('user')}" id="user"></p>
+<div id="post-form">
+    <button onclick="showPostInput()">发表帖子</button>
+    <button onclick="showHotPosts()">热点榜单</button>
+    <button onclick="dailyRecommendations()">每日推荐</button>
+    <button onclick="toMyHome()">我的主页</button>
+    <div class="search-container">
+        <input type="text" placeholder="查询帖子" th:id="search" name="keyword" class="styled-input">
+    </div>
+    <button th:id="search-button" onclick="searchPost()">搜索</button>
+
+    <div id="post-input" style="display: none;">
+        <textarea id="post-text" placeholder="分享你的心情..."></textarea>
+        <input type="file" th:multiple="multiple" id="post-image" accept="image/*" placeholder="选择图片">
+        <select name="category" id="category">
+            <option value="">--选择分类--</option>
+            <option value="求助">求助</option>
+            <option value="转售">转售</option>
+            <option value="吐槽">吐槽</option>
+            <option value="拼团">拼团</option>
+            <option value="交友">交友</option>
+            <option value="表白">表白</option>
+            <option value="其他">其他</option>
+        </select>
+        <button onclick="createPost()">发表</button>
+    </div>
+</div>
+
+<div id="posts-list">
+    <!-- 动态生成的帖子将显示在这里 -->
+</div>
+<div id="pagination-container-and-info" style="display: flex;">
+    <div id="pagination-container">
+        <!-- 分页控件将显示在这里 -->
+    </div>
+    <div id="page-info">
+        <!-- 显示当前页和总页数的元素 -->
+    </div>
+</div>
+<script src="/js/script.js"></script>
+</body>
+</html>
+
+
